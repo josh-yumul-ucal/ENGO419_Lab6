@@ -1,0 +1,55 @@
+
+# =====================================
+# CMake build files
+# =====================================
+build/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+Makefile
+.ninja_deps
+.ninja_log
+build.ninja
+
+# =====================================
+# Compiled C++ files
+# =====================================
+*.exe
+*.o
+*.obj
+*.a
+*.lib
+*.dll
+*.so
+*.pdb
+
+# =====================================
+# Eigen / CMake FetchContent
+# =====================================
+_deps/
+FetchContent/
+
+# =====================================
+# VS Code
+# =====================================
+.vscode/
+
+# =====================================
+# Visual Studio
+# =====================================
+.vs/
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.user
+
+# =====================================
+# Temporary files
+# =====================================
+*.tmp
+*.bak
+*~
+.DS_Store
+Thumbs.db
