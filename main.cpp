@@ -8,10 +8,10 @@ using namespace std;
 
 int main(){
     // readMatrix() checks matrix size, no need to check
-    MatrixXd xhat = readMatrix("raw_xhat.txt", 5, 2);
-    MatrixXd Cxhat = readMatrix("raw_Cxhat.txt", 10, 10);
-    MatrixXd Cobs = readMatrix("Cl.txt", 26, 26);
-    MatrixXd A = readMatrix("A.txt", 26, 10);
+    MatrixXd xhat = readMatrix("final_xhat.txt", 5, 2);
+    MatrixXd Cxhat = readMatrix("final_Cxhat.txt", 10, 10);
+    MatrixXd Cobs = readMatrix("final_Cl.txt", 24, 24);
+    MatrixXd A = readMatrix("final_A.txt", 24, 10);
 
     // cout << "Adjusted Coordinates:\n" << xhat << endl;
     // cout << "Covariance Matrix of Parameters\n" << Cxhat << endl;   
@@ -19,12 +19,14 @@ int main(){
     // cout << "Design matrix\n" << A << endl;
 
     MatrixXd Cr = Cobs - A * Cxhat * A.transpose();
-    cout << "Covariance of Residuals" << Cr << endl;
+    writeMatrix(Cr, "final_Cr.txt");
 
     // VectorXd redundancy = findRedundancy(Cr, Cobs);
 
     MatrixXd redundancy = Cr * Cobs.inverse();
 
+    // NOTE: Rows 10 and 20 correspond to dist: 5-6 and angle: 1-5-7, super small because 7's position is 
+    // based on an angle and distance measurement, meaning that a blunder in its position would be undetectable
     cout << "Redundancy Numbers\n" << redundancy.diagonal() << endl;
 
     // VectorXd MDB = findMDB(Cobs, redundancy, alpha, beta);

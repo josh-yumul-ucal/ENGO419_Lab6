@@ -29,7 +29,7 @@ MatrixXd readMatrix(const string &filename, int rows, int cols){
 }
 
 void writeMatrix(const MatrixXd& matrix, const string& name){
-    ofstream file(name);
+    ofstream file("../../../" + name);
 
     if (!file.is_open()){
         throw runtime_error("Error: Could not write matrix");
