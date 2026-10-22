@@ -3,6 +3,8 @@
 #include <iostream>
 #include <Eigen/Dense>
 #include <iomanip>
+#include <boost/math/distributions/normal.hpp>
+namespace bm = boost::math;
 using namespace std;
 using namespace Eigen;
 
@@ -68,6 +70,14 @@ VectorXd findRedundancy(const MatrixXd &Cr, const MatrixXd &Cobs){
     return redundancy;
 }
 
-VectorXd findMDB(const MatrixXd &Cobs, const MatrixXd &redundancy){
+VectorXd findMDB(const MatrixXd &Cobs, const MatrixXd &redundancy, double alpha, double beta){
+    // Calculating noncentrality parameter (lambda)
+    bm::normal_distribution<double> normal;
     
+    double zAlpha = bm::quantile(normal, 1 - alpha / 2);
+    double zBeta = bm::quantile(normal, 1 - beta);
+
+    double lambda = pow(zAlpha + zBeta, 2);
+
+
 }

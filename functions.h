@@ -13,6 +13,6 @@ void writeMatrix(const MatrixXd& matrix, const string& name);
 
 VectorXd findRedundancy(const MatrixXd& Cr, const MatrixXd& Cobs);
 
-VectorXd findMDB(const MatrixXd& Cobs, const MatrixXd& redundancy);
+VectorXd findMDB(const MatrixXd& Cobs, const MatrixXd& redundancy, double alpha, double beta);
 
 #endif
