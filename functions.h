@@ -9,7 +9,7 @@ using namespace Eigen;
 
 MatrixXd readMatrix(const string& filename, int rows, int cols);
 
-
+void writeMatrix(const MatrixXd& matrix, const string& name);
 
 
 #endif

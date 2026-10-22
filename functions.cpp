@@ -2,11 +2,12 @@
 #include <fstream>
 #include <iostream>
 #include <Eigen/Dense>
+#include <iomanip>
 using namespace std;
 using namespace Eigen;
 
 MatrixXd readMatrix(const string &filename, int rows, int cols){
-    ifstream file(filename);
+    ifstream file("../../../" + filename);
 
     if(!file.is_open()){
         throw runtime_error("Cannot open file: " + filename);
@@ -16,7 +17,38 @@ MatrixXd readMatrix(const string &filename, int rows, int cols){
 
     for (int i = 0; i < rows; i++){
         for (int j = 0; j < cols; j++){
-            
+            if(!(file >> matrix(i,j))){
+                throw runtime_error("Error reading file: " + filename);
+            }
         }
     }
+    return matrix;
+}
+
+void writeMatrix(const MatrixXd& matrix, const string& name){
+    ofstream file(name);
+
+    if (!file.is_open()){
+        throw runtime_error("Error: Could not write matrix");
+    }
+
+    // file << fixed << setprecision(6);
+
+    // for (int i = 0; i < matrix.rows(); i++){
+    //     for (int j = 0; j < matrix.cols(); j++){
+    //         file << matrix(i,j);
+
+    //         if (j < matrix.cols() - 1){
+    //             file << " ";
+    //         }
+    //     }
+    //     file << "\n";
+    // }
+    // file.close();
+
+    // Uses IOFormat object from Eigen library to print matrices
+    IOFormat format(FullPrecision, DontAlignCols, " ", "\n");
+    file << matrix.format(format);
+
+    cout << "Matrix successfully written to: " << name << endl;
 }
