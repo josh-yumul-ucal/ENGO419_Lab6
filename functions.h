@@ -11,8 +11,6 @@ MatrixXd readMatrix(const string& filename, int rows, int cols);
 
 void writeMatrix(const MatrixXd& matrix, const string& name);
 
-VectorXd findRedundancy(const MatrixXd& Cr, const MatrixXd& Cobs);
-
-VectorXd findMDB(const MatrixXd& Cobs, const MatrixXd& redundancy, double alpha, double beta);
+VectorXd findMDB(const MatrixXd& Cobs, const VectorXd& redundancy, double alpha, double beta);
 
 #endif

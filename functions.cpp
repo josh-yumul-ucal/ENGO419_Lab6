@@ -3,6 +3,7 @@
 #include <iostream>
 #include <Eigen/Dense>
 #include <iomanip>
+#include <limits>
 #include <boost/math/distributions/normal.hpp>
 namespace bm = boost::math;
 using namespace std;
@@ -55,29 +56,35 @@ void writeMatrix(const MatrixXd& matrix, const string& name){
     cout << "Matrix successfully written to: " << name << endl;
 }
 
-VectorXd findRedundancy(const MatrixXd &Cr, const MatrixXd &Cobs){
-    int n = Cobs.rows();
-    VectorXd redundancy(n);
 
-    for (int i = 0; i < n; i++){
-        redundancy(i) = Cr(i,i) / Cobs(i,i);
-
-        if (abs(redundancy(i)) < 1e-8){
-            redundancy(i) = 0.0;
-        }
-    }
-
-    return redundancy;
-}
-
-VectorXd findMDB(const MatrixXd &Cobs, const MatrixXd &redundancy, double alpha, double beta){
+VectorXd findMDB(const MatrixXd &Cobs, const VectorXd &redundancy, double alpha, double beta){
     // Calculating noncentrality parameter (lambda)
     bm::normal_distribution<double> normal;
-    
+
+    // Two-tailed test on the standardized residual, so alpha is split between both tails
     double zAlpha = bm::quantile(normal, 1 - alpha / 2);
+    // Power of the test is (1 - beta), so the blunder must shift the mean by z(1 - beta)
     double zBeta = bm::quantile(normal, 1 - beta);
 
     double lambda = pow(zAlpha + zBeta, 2);
 
+    int n = Cobs.rows();
+    VectorXd MDB(n);
 
+    for (int i = 0; i < n; i++){
+        // Standard deviation of the i-th observation
+        double sigmaObs = sqrt(Cobs(i,i));
+
+        // An observation with zero redundancy is not checked by any other observation,
+        // so no blunder in it can be detected (MDB is infinite)
+        if (redundancy(i) == 0.0){
+            MDB(i) = numeric_limits<double>::infinity();
+            continue;
+        }
+
+        // MDB_i = sqrt(lambda) * sigma_i / sqrt(r_i)
+        MDB(i) = sqrt(lambda) * sigmaObs / sqrt(redundancy(i));
+    }
+
+    return MDB;
 }

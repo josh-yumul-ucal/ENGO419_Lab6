@@ -21,13 +21,15 @@ int main(){
     MatrixXd Cr = Cobs - A * Cxhat * A.transpose();
     cout << "Covariance of Residuals" << Cr << endl;
 
-    VectorXd redundancy = findRedundancy(Cr, Cobs);
+    // VectorXd redundancy = findRedundancy(Cr, Cobs);
 
-    cout << "Redundancy numbers\n" << redundancy << endl;
+    MatrixXd redundancy = Cr * Cobs.inverse();
 
-    cout << "Total redundancy\n" << redundancy.sum() << endl;
+    cout << "Redundancy Numbers\n" << redundancy.diagonal() << endl;
 
-    
+    // VectorXd MDB = findMDB(Cobs, redundancy, alpha, beta);
+
+    // cout << "Minimum detectable blunders\n" << MDB << endl;
 
     return 0;
 }
