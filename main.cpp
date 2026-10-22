@@ -21,17 +21,20 @@ int main(){
     MatrixXd Cr = Cobs - A * Cxhat * A.transpose();
     writeMatrix(Cr, "final_Cr.txt");
 
-    // VectorXd redundancy = findRedundancy(Cr, Cobs);
-
+    // Compute redundancy matrix R
     MatrixXd redundancy = Cr * Cobs.inverse();
+    VectorXd R = redundancy.diagonal();
 
     // NOTE: Rows 10 and 20 correspond to dist: 5-6 and angle: 1-5-7, super small because 7's position is 
     // based on an angle and distance measurement, meaning that a blunder in its position would be undetectable
-    cout << "Redundancy Numbers\n" << redundancy.diagonal() << endl;
+    cout << "Redundancy Numbers\n" << R << endl;
 
-    // VectorXd MDB = findMDB(Cobs, redundancy, alpha, beta);
+    double alpha = 0.05;
+    double beta = 0.80;
 
-    // cout << "Minimum detectable blunders\n" << MDB << endl;
+    VectorXd MDB = findMDB(Cobs, R, alpha, beta);
+
+    cout << "Minimum detectable blunders\n" << MDB << endl;
 
     return 0;
 }

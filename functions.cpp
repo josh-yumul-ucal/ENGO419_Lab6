@@ -66,7 +66,8 @@ VectorXd findMDB(const MatrixXd &Cobs, const VectorXd &redundancy, double alpha,
     double zAlpha = bm::quantile(normal, 1 - alpha / 2);
     double zBeta = bm::quantile(normal, 1 - beta);
 
-    double lambda = pow(zAlpha + zBeta, 2);
+    double delta = zAlpha + zBeta;
+    cout << "Delta0: " << delta << endl;
 
     int n = Cobs.rows();
     VectorXd MDB(n);
@@ -83,7 +84,7 @@ VectorXd findMDB(const MatrixXd &Cobs, const VectorXd &redundancy, double alpha,
         }
 
         // MDB_i = sqrt(lambda) * sigma_i / sqrt(r_i)
-        MDB(i) = sqrt(lambda) * sigmaObs / sqrt(redundancy(i));
+        MDB(i) = sqrt(delta) * sigmaObs / sqrt(redundancy(i));
     }
 
     return MDB;
