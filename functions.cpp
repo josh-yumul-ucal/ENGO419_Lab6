@@ -62,6 +62,7 @@ VectorXd findMDB(const MatrixXd &Cobs, const VectorXd &redundancy, double alpha,
     bm::normal_distribution<double> normal;
 
     // APPARENTLY THERE'S A VALUE ON A TABLE IN SIDERES SLIDES SO FUCK ME
+    // TODO: fix change the function, change everything and just use lambda = 2.80;
     double zAlpha = bm::quantile(normal, 1 - alpha / 2);
     double zBeta = bm::quantile(normal, 1 - beta);
 
