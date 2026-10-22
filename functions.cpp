@@ -67,3 +67,7 @@ VectorXd findRedundancy(const MatrixXd &Cr, const MatrixXd &Cobs){
 
     return redundancy;
 }
+
+VectorXd findMDB(const MatrixXd &Cobs, const MatrixXd &redundancy){
+    
+}

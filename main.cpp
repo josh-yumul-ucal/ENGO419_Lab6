@@ -21,6 +21,12 @@ int main(){
     MatrixXd Cr = Cobs - A * Cxhat * A.transpose();
     cout << "Covariance of Residuals" << Cr << endl;
 
+    VectorXd redundancy = findRedundancy(Cr, Cobs);
+
+    cout << "Redundancy numbers\n" << redundancy << endl;
+
+    cout << "Total redundancy\n" << redundancy.sum() << endl;
+
     
 
     return 0;
