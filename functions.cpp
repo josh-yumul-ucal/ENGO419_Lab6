@@ -61,9 +61,8 @@ VectorXd findMDB(const MatrixXd &Cobs, const VectorXd &redundancy, double alpha,
     // Calculating noncentrality parameter (lambda)
     bm::normal_distribution<double> normal;
 
-    // Two-tailed test on the standardized residual, so alpha is split between both tails
+    // APPARENTLY THERE'S A VALUE ON A TABLE IN SIDERES SLIDES SO FUCK ME
     double zAlpha = bm::quantile(normal, 1 - alpha / 2);
-    // Power of the test is (1 - beta), so the blunder must shift the mean by z(1 - beta)
     double zBeta = bm::quantile(normal, 1 - beta);
 
     double lambda = pow(zAlpha + zBeta, 2);
