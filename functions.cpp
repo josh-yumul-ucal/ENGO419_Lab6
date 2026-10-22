@@ -52,3 +52,18 @@ void writeMatrix(const MatrixXd& matrix, const string& name){
 
     cout << "Matrix successfully written to: " << name << endl;
 }
+
+VectorXd findRedundancy(const MatrixXd &Cr, const MatrixXd &Cobs){
+    int n = Cobs.rows();
+    VectorXd redundancy(n);
+
+    for (int i = 0; i < n; i++){
+        redundancy(i) = Cr(i,i) / Cobs(i,i);
+
+        if (abs(redundancy(i)) < 1e-8){
+            redundancy(i) = 0.0;
+        }
+    }
+
+    return redundancy;
+}

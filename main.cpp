@@ -21,6 +21,7 @@ int main(){
     MatrixXd Cr = Cobs - A * Cxhat * A.transpose();
     cout << "Covariance of Residuals" << Cr << endl;
 
+    
 
     return 0;
 }
