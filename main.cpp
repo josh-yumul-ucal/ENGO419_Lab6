@@ -1,6 +1,7 @@
 #include "functions.h"
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 #include <Eigen/Dense>
 #include <string>
 #include <cmath>
@@ -9,7 +10,8 @@ using namespace Eigen;
 using namespace std;
 
 int main(){
-    // readMatrix() checks matrix size, no need to check
+    // readMatrix() checks matrix size, no need to check, causes comp error if files:
+    // 1. don't match matrix dimension size 2. are unreachable to the program
     MatrixXd xhat = readMatrix("final_xhat.txt", 5, 2);
     MatrixXd Cxhat = readMatrix("final_Cxhat.txt", 10, 10);
     MatrixXd Cobs = readMatrix("final_Cl.txt", 24, 24);
@@ -27,7 +29,7 @@ int main(){
     MatrixXd redundancy = Cr * Cobs.inverse();
     VectorXd R = redundancy.diagonal();
 
-    // NOTE: Rows 10 and 20 correspond to dist: 5-6 and angle: 1-5-7, super small because 7's position is 
+    // NOTE: Rows 10 and 20 correspond to dist: 5-7 and angle: 1-5-7, super small because 7's position is 
     // based on an angle and distance measurement, meaning that a blunder in its position would be undetectable
     cout << "Redundancy Numbers\n" << R << endl;
 
@@ -89,7 +91,7 @@ int main(){
     }
 
     
-    cout << "\nGlobal External Reliability" << endl;
+    cout << "\nGlobal External Reliability Measure" << endl;
     for (int i = 0; i < n; i++){
         cout << "Obs: " << i + 1 << endl;
 
@@ -104,6 +106,91 @@ int main(){
         cout << "lambda_x = " << globalERV << endl;
 
     }
+
+    // PRINT SECTION: basically copy and pasted the for loops above and replaced all the couts with ofstream objects
+    // Used comma-delimited headers to let Python do the parsing
+    // Can switch to Excel if Python too inconvenient
+
+    // Redundancy numbers
+    ofstream redundancyFile("../results_redundancy.txt");
+    redundancyFile << setprecision(15);
+    redundancyFile << "obs,redundancy\n";
+    for (int i = 0; i < n; i++){
+        redundancyFile << i + 1 << "," << R(i) << "\n";
+    }
+    redundancyFile.close();
+    cout << "Results successfully written to: results_redundancy.txt" << endl;
+
+    // MDBs [m for distances, rad for angles]
+    ofstream mdbFile("../results_MDB.txt");
+    mdbFile << setprecision(15);
+    mdbFile << "obs,MDB\n";
+    for (int i = 0; i < n; i++){
+        mdbFile << i + 1 << "," << MDB(i) << "\n";
+    }
+    mdbFile.close();
+    cout << "Results successfully written to: results_MDB.txt" << endl;
+
+    // ERV, one row per observation, one column per parameter [m]
+    ofstream ervFile("../results_ERV.txt");
+    ervFile << setprecision(15);
+    ervFile << "obs";
+    for (int j = 0; j < ERV.rows(); j++){
+        ervFile << "," << names[j];
+    }
+    ervFile << "\n";
+    for (int i = 0; i < n; i++){
+        ervFile << i + 1;
+        for (int j = 0; j < ERV.rows(); j++){
+            ervFile << "," << ERV(j, i);
+        }
+        ervFile << "\n";
+    }
+    ervFile.close();
+    cout << "Results successfully written to: results_ERV.txt" << endl;
+
+    // Three most affect parameters of ERV [mm]
+    ofstream top3File("../results_top3_ERV.txt");
+    top3File << setprecision(15);
+    top3File << "obs,param1,value1_mm,param2,value2_mm,param3,value3_mm\n";
+    for (int i = 0; i < n; i++){
+        top3File << i + 1;
+
+        if (!isfinite(MDB(i))){
+            top3File << ",nan,nan,nan,nan,nan,nan\n";
+            continue;
+        }
+
+        VectorXd absERV = ERV.col(i).cwiseAbs();
+        for (int j = 0; j < 3; j++){
+            int index;
+            absERV.maxCoeff(&index);
+            top3File << "," << names[index] << "," << ERV(index, i) * 1000;
+            absERV(index) = -1;
+        }
+        top3File << "\n";
+    }
+    top3File.close();
+    cout << "Results successfully written to: results_top3_ERV.txt" << endl;
+
+    // Global external reliability measure (unitless)
+    MatrixXd CxhatInv = Cxhat.inverse();
+    ofstream globalFile("../results_global_ERV.txt");
+    globalFile << setprecision(15);
+    globalFile << "obs,global_ERV\n";
+    for (int i = 0; i < n; i++){
+        globalFile << i + 1 << ",";
+
+        if (!isfinite(MDB(i))){
+            globalFile << "nan\n";
+            continue;
+        }
+
+        VectorXd gradX = ERV.col(i);
+        globalFile << gradX.transpose() * CxhatInv * gradX << "\n";
+    }
+    globalFile.close();
+    cout << "Results successfully written to: results_global_ERV.txt" << endl;
 
     return 0;
 }
