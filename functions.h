@@ -13,4 +13,6 @@ void writeMatrix(const MatrixXd& matrix, const string& name);
 
 VectorXd findMDB(const MatrixXd& Cobs, const VectorXd& redundancy, double alpha, double beta);
 
+VectorXd findERV(const MatrixXd& A, const MatrixXd Cobs, const VectorXd& MDB);
+
 #endif

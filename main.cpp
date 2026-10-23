@@ -36,5 +36,10 @@ int main(){
 
     cout << "Minimum detectable blunders\n" << MDB << endl;
 
+    VectorXd nablaXHat = (A.transpose() * Cobs.inverse() * A).inverse() * A.transpose() * Cobs.inverse() * MDB;
+
+    cout << "External Reliability Vector\n" << nablaXHat << endl;
+
+
     return 0;
 }

@@ -61,8 +61,6 @@ VectorXd findMDB(const MatrixXd &Cobs, const VectorXd &redundancy, double alpha,
     // Calculating noncentrality parameter (lambda)
     bm::normal_distribution<double> normal;
 
-    // APPARENTLY THERE'S A VALUE ON A TABLE IN SIDERES SLIDES SO FUCK ME
-    // TODO: fix change the function, change everything and just use lambda = 2.80;
     double zAlpha = bm::quantile(normal, 1 - alpha / 2);
     double zBeta = bm::quantile(normal, 1 - beta);
 
@@ -72,6 +70,7 @@ VectorXd findMDB(const MatrixXd &Cobs, const VectorXd &redundancy, double alpha,
     int n = Cobs.rows();
     VectorXd MDB(n);
 
+    // Iterating through all residuals
     for (int i = 0; i < n; i++){
         // Standard deviation of the i-th observation
         double sigmaObs = sqrt(Cobs(i,i));
@@ -86,6 +85,10 @@ VectorXd findMDB(const MatrixXd &Cobs, const VectorXd &redundancy, double alpha,
         // MDB_i = sqrt(lambda) * sigma_i / sqrt(r_i)
         MDB(i) = sqrt(delta) * sigmaObs / sqrt(redundancy(i));
     }
-
     return MDB;
+}
+
+VectorXd findERV(const MatrixXd &A, const MatrixXd Cobs, const VectorXd &MDB)
+{
+    return VectorXd();
 }
