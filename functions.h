@@ -13,6 +13,7 @@ void writeMatrix(const MatrixXd& matrix, const string& name);
 
 VectorXd findMDB(const MatrixXd& Cobs, const VectorXd& redundancy, double alpha, double beta);
 
+// For task D, create a new VectorXd singleMDB so that we can compute the ERV with only one MDB at a time
 VectorXd findERV(const MatrixXd& A, const MatrixXd Cobs, const VectorXd& MDB);
 
 #endif

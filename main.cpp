@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <Eigen/Dense>
+#include <cmath>
 
 using namespace Eigen;
 using namespace std;
@@ -36,10 +37,26 @@ int main(){
 
     cout << "Minimum detectable blunders\n" << MDB << endl;
 
-    VectorXd nablaXHat = (A.transpose() * Cobs.inverse() * A).inverse() * A.transpose() * Cobs.inverse() * MDB;
+    int n = MDB.size();
+    MatrixXd ERV(A.cols(), n);
 
-    cout << "External Reliability Vector\n" << nablaXHat << endl;
+    for (int i = 0; i < n; i++){
+    VectorXd singleMDB = VectorXd::Zero(n);
 
+    singleMDB(i) = MDB(i);
+    
+    if (!isfinite(MDB(i))){
+        for (int j = 0; j < ERV.rows(); j++){
+            ERV(j, i) = NAN;
+        }
+        continue;
+    }
+
+    ERV.col(i) = findERV(A, Cobs, singleMDB);
+    }
+
+    cout << "External Reliability Vectors\n" << ERV << endl;
+    writeMatrix(ERV, "ERV(backup).txt");
 
     return 0;
 }

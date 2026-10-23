@@ -77,18 +77,19 @@ VectorXd findMDB(const MatrixXd &Cobs, const VectorXd &redundancy, double alpha,
 
         // An observation with zero redundancy is not checked by any other observation,
         // so no blunder in it can be detected (MDB is infinite)
-        if (redundancy(i) == 0.0){
+        if (redundancy(i) < 1e-8){
             MDB(i) = numeric_limits<double>::infinity();
             continue;
         }
 
         // MDB_i = sqrt(lambda) * sigma_i / sqrt(r_i)
-        MDB(i) = sqrt(delta) * sigmaObs / sqrt(redundancy(i));
+        MDB(i) = delta * sigmaObs / sqrt(redundancy(i));
     }
     return MDB;
 }
 
-VectorXd findERV(const MatrixXd &A, const MatrixXd Cobs, const VectorXd &MDB)
-{
-    return VectorXd();
+VectorXd findERV(const MatrixXd &A, const MatrixXd Cobs, const VectorXd &MDB){
+    MatrixXd P = Cobs.inverse();
+    return (A.transpose() * P * A).inverse() * A.transpose() * P * MDB;
 }
+
