@@ -31,7 +31,7 @@ int main(){
     cout << "Redundancy Numbers\n" << R << endl;
 
     double alpha = 0.05;
-    double beta = 0.20;
+    double beta = 0.80;
 
     VectorXd MDB = findMDB(Cobs, R, alpha, beta);
 
