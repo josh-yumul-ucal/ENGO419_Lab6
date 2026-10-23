@@ -88,5 +88,22 @@ int main(){
 
     }
 
+    
+    cout << "\nGlobal External Reliability" << endl;
+    for (int i = 0; i < n; i++){
+        cout << "Obs: " << i + 1 << endl;
+
+        if (!isfinite(MDB(i))){
+            cout << "Not checkable due to zero redundancy" << endl;
+            continue;
+        }
+
+        VectorXd gradX = ERV.col(i);
+        double globalERV = gradX.transpose() * Cxhat.inverse() * gradX;
+
+        cout << "lambda_x = " << globalERV << endl;
+
+    }
+
     return 0;
 }
