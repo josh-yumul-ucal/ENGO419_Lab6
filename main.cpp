@@ -60,7 +60,7 @@ int main(){
     
     // Prints ERV to terminal, disabled for aesthetic reasons
     // cout << "External Reliability Vectors\n" << ERV << endl;
-    writeMatrix(ERV, "ERV(backup).txt");
+    // writeMatrix(ERV, "ERV(backup).txt");
 
     string names[10] = {"X1", "Y1", "X3", "Y3", "X5", "Y5", "X6", "Y6", "X7", "Y7"};
 
